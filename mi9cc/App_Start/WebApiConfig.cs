@@ -9,16 +9,22 @@ namespace mi9cc
     {
         public static void Register(HttpConfiguration config)
         {
-            // Web API configuration and services
-
             // Web API routes
             config.MapHttpAttributeRoutes();
 
+            //config.Routes.MapHttpRoute(
+            //    name: "Index",
+            //    routeTemplate: "",
+            //    defaults: new { controller = "Values", action = "Index" }
+            //);
+
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
-                routeTemplate: "api/{controller}/{id}",
-                defaults: new { id = RouteParameter.Optional }
+                routeTemplate: "{controller}/{id}",
+                defaults: new { id = RouteParameter.Optional, controller = "FilterShows" }
             );
+
+
         }
     }
 }
