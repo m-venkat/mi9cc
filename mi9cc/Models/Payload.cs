@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using Newtonsoft.Json;
 
-namespace mi9cc.JsonModel
+namespace Mi9cc.JsonModel
 {
     public class PayLoadContainer
     {
@@ -17,10 +14,33 @@ namespace mi9cc.JsonModel
 
     public class payload
     {
+        private object _drm = null;
+        
         public string country { get; set; }
         public string description { get; set; }
-        public bool? drm { get; set; }
-        public int? episodeCount { get; set; }
+        public object drm {
+            get { return _drm; }
+            set { _drm = value; }
+        }
+        public bool drmAsBool
+        {
+            get {
+                if (                           
+                        string.IsNullOrEmpty(Convert.ToString(_drm)) 
+                        || string.IsNullOrWhiteSpace(Convert.ToString(_drm))
+                        || Convert.ToString(_drm).Trim().ToLower() == "false"
+                        || Convert.ToString(_drm).Trim().ToLower() == "0"
+                        )
+                    return false;
+                 else if (Convert.ToString(_drm).Trim().ToLower() == "true"
+                        || Convert.ToString(_drm).Trim().ToLower() == "1")
+                    return true;
+                return false;
+
+            }
+            
+        }
+        public int episodeCount { get; set; }
         public string genre { get; set; }
         public image image { get; set; }
         public string language { get; set; }

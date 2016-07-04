@@ -1,48 +1,50 @@
-﻿using mi9cc.JsonModel;
+﻿using mi9cc.BusinessLayer;
+using Mi9cc.JsonModel;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
+using System;
 using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.ModelBinding;
 
 namespace mi9cc.Controllers
 {
-    [RoutePrefix("/")]
+   // [RoutePrefix("/")]
     public class FilterShowsController : ApiController
     {
         // GET api/values
         [HttpGet]
-        public IEnumerable<string> Get()
+        public String Get()
         {
-            return new string[] { "value1", "value2" };
+            return "Welcome to Mi9 Code Challenge WebService end point.  Please submit your JSON payload to the WebService root using POST";
         }
 
 
         [HttpPost]
-        public IHttpActionResult Post([FromBody]PayLoadContainer value)
+        public IHttpActionResult Post([FromBody]PayLoadContainer submittedPayload)
         {
-            //Request.Content           
-            //return Ok(value);
-            //JsonConvert.DeserializeObject<List<payLoad>>(value.ToString(),
-            //    new JsonSerializerSettings
-            //        {
-            //            ContractResolver = new CamelCasePropertyNamesContractResolver()
-            //        }
-            //    );
-           
-            return Ok(Request.Content.ReadAsStringAsync().Result);
+            try
+            { 
+                if(submittedPayload == null ||
+                  (submittedPayload != null && submittedPayload.payload ==null)  
+                 )
+                {  
+                    return Content(HttpStatusCode.BadRequest, new { error = "Could not decode request: JSON parsing failed" });
+                }
+                else
+                {
+                    FilterShows fs = new FilterShows();
+                    return Ok(fs.ApplyFilter(submittedPayload)); 
+                }
+            }
+            catch(Exception ex)
+            {
+                return Content(HttpStatusCode.InternalServerError, new { error = "Internal Server error, retry after sometime" });
+            }
 
-        }
 
-        //[HttpPost]
-        //public IHttpActionResult Filter([FromBody]string value)
-        //{
-        //    //return 
-        //    //Request.Content
-        //    return Ok(Request.Content.ReadAsStringAsync().Result);
-
-        //}
-
+        }       
        
     }
 }
